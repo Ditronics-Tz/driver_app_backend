@@ -264,6 +264,7 @@ def create_ride(request):
 		)
 
 	driver_raw = data.get("driver_id")
+	passenger_raw = data.get("passenger_id")
 	try:
 		if driver_raw not in (None, ""):
 			from data.models import Driver
@@ -273,6 +274,18 @@ def create_ride(request):
 	except (TypeError, ValueError, Driver.DoesNotExist):
 		return Response(
 			{"detail": "driver_id must be a valid Driver ID if provided."},
+			status=status.HTTP_400_BAD_REQUEST,
+		)
+
+	try:
+		if passenger_raw not in (None, ""):
+			from authentication.models import User
+			passenger = User.objects.get(uuid=passenger_raw)
+		else:
+			passenger = None
+	except User.DoesNotExist:
+		return Response(
+			{"detail": "passenger_id must be a valid User UUID if provided."},
 			status=status.HTTP_400_BAD_REQUEST,
 		)
 
@@ -323,6 +336,7 @@ def create_ride(request):
 
 	ride = Ride.objects.create(
 		driver=driver,
+		passenger=passenger,
 		start_lat=start_lat,
 		start_lng=start_lng,
 		start_address=data.get("start_address", ""),

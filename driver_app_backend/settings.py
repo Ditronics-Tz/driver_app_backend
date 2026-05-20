@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'authentication',
     'routing',
     'data',
+    'manager',
 ]
 
 MIDDLEWARE = [
@@ -87,6 +89,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'driver_app_backend.wsgi.application'
+ASGI_APPLICATION = 'driver_app_backend.asgi.application'
 
 
 # Database
@@ -252,5 +255,34 @@ CELERY_TIMEZONE = TIME_ZONE
 
 # Celery Beat Schedule for periodic tasks
 CELERY_BEAT_SCHEDULE = {
-    # Health monitoring tasks have been removed
+    'aggregate_daily_revenue': {
+        'task': 'manager.tasks.aggregate_daily_revenue',
+        'schedule': crontab(hour=0, minute=0),
+    },
+    'aggregate_daily_rides': {
+        'task': 'manager.tasks.aggregate_daily_rides',
+        'schedule': crontab(hour=0, minute=0),
+    },
+    'detect_fraud_patterns': {
+        'task': 'manager.tasks.detect_fraud_patterns',
+        'schedule': crontab(minute='*/15'),
+    },
+    'close_stale_tickets': {
+        'task': 'manager.tasks.close_stale_tickets',
+        'schedule': crontab(hour=1, minute=0),
+    },
+    'send_dashboard_stats': {
+        'task': 'manager.tasks.send_dashboard_stats',
+        'schedule': 30.0,
+    },
+}
+
+# Channels
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [config('REDIS_URL', default='redis://localhost:6379/0')],
+        },
+    }
 }

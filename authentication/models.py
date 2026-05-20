@@ -13,6 +13,8 @@ class UserManager(BaseUserManager):
     def create_user(self, email=None, phone_number=None, password=None, **extra_fields):
         if not email and not phone_number:
             raise ValueError('User must have either email or phone number')
+
+        extra_fields.pop('username', None)
         
         if email:
             email = self.normalize_email(email)
@@ -65,6 +67,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=False)  # Will be activated after OTP verification
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+
+    STATUS_ACTIVE = "active"
+    STATUS_SUSPENDED = "suspended"
+    STATUS_BANNED = "banned"
+
+    STATUS_CHOICES = [
+        (STATUS_ACTIVE, "Active"),
+        (STATUS_SUSPENDED, "Suspended"),
+        (STATUS_BANNED, "Banned"),
+    ]
+
+    account_status = models.CharField(max_length=16, choices=STATUS_CHOICES, default=STATUS_ACTIVE)
     
     # Verification fields
     email_verified = models.BooleanField(default=False)
