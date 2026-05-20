@@ -43,7 +43,7 @@ htmlcov/
 .coverage
 .coverage.*
 .cache
-nosetests.xml```
+nosetests.xml
 # Python compiled files
 __pycache__/
 *.pyc
