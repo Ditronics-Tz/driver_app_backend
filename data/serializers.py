@@ -9,7 +9,7 @@ class DriverVerificationSerializer(serializers.ModelSerializer):
     carName = serializers.CharField(source='car_name')
     plateNumber = serializers.CharField(source='plate_number')
     carType = serializers.ChoiceField(source='car_type', choices=Driver.CAR_TYPES)
-    numberOfSeats = serializers.IntegerField(source='number_of_seats')
+    numberOfSeats = serializers.IntegerField(source='number_of_seats', min_value=2, max_value=7)
     profilePhoto = serializers.ImageField(source='profile_photo')
     idPhoto = serializers.ImageField(source='id_photo')
     carPhoto = serializers.ImageField(source='car_photo')

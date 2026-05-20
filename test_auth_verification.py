@@ -10,6 +10,10 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'driver_app_backend.settings')
 sys.path.insert(0, os.path.dirname(__file__))
 django.setup()
 
+from django.conf import settings
+if 'testserver' not in settings.ALLOWED_HOSTS:
+    settings.ALLOWED_HOSTS.append('testserver')
+
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
 from manager.models import AdminRole, AdminUser, AdminRefreshToken
@@ -98,6 +102,7 @@ def test_logout(new_data):
     """Test 3: Logout endpoint"""
     print('\nTEST 3: Admin Logout')
     client = APIClient()
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {new_data['access']}")
     
     new_refresh_token = RefreshToken(new_data['refresh'])
     logout_response = client.post('/api/admin/v1/auth/logout/', {'refresh': new_data['refresh']})
@@ -309,6 +314,10 @@ def run_all_tests():
     print('ADMIN AUTH ENDPOINTS & JWT ROLE CLAIMS VERIFICATION')
     print('='*70)
     
+    # Clean up existing test users if they exist
+    emails = ['test@example.com', 'finance@example.com', 'support@example.com', 'ops@example.com', 'locktest@example.com']
+    AdminUser.objects.filter(email__in=emails).delete()
+    
     try:
         # Test 1-4: Login flow
         data = test_login_with_role_claims()
@@ -348,6 +357,9 @@ def run_all_tests():
         traceback.print_exc()
         print('='*70)
         return False
+    finally:
+        # Clean up database after test execution
+        AdminUser.objects.filter(email__in=emails).delete()
 
 
 if __name__ == '__main__':

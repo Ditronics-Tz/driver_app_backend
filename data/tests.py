@@ -11,6 +11,8 @@ from .serializers import DriverVerificationSerializer
 
 User = get_user_model()
 
+SMALL_GIF = b'GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x01\x04\x00;'
+
 
 class DriverModelTest(TestCase):
     def setUp(self):
@@ -66,9 +68,9 @@ class DriverVerificationSerializerTest(TestCase):
             'plateNumber': 'T123ABC',
             'carType': 'Sedan',
             'numberOfSeats': 4,
-            'profilePhoto': SimpleUploadedFile("profile.jpg", b"file_content", content_type="image/jpeg"),
-            'idPhoto': SimpleUploadedFile("id.jpg", b"file_content", content_type="image/jpeg"),
-            'carPhoto': SimpleUploadedFile("car.jpg", b"file_content", content_type="image/jpeg"),
+            'profilePhoto': SimpleUploadedFile("profile.gif", SMALL_GIF, content_type="image/gif"),
+            'idPhoto': SimpleUploadedFile("id.gif", SMALL_GIF, content_type="image/gif"),
+            'carPhoto': SimpleUploadedFile("car.gif", SMALL_GIF, content_type="image/gif"),
         }
         serializer = DriverVerificationSerializer(data=data, context={'request': type('Request', (), {'user': self.user})()})
         self.assertTrue(serializer.is_valid())
@@ -108,9 +110,9 @@ class DriverAPITest(APITestCase):
             'plateNumber': 'T123ABC',
             'carType': 'Sedan',
             'numberOfSeats': 4,
-            'profilePhoto': SimpleUploadedFile("profile.jpg", b"file_content", content_type="image/jpeg"),
-            'idPhoto': SimpleUploadedFile("id.jpg", b"file_content", content_type="image/jpeg"),
-            'carPhoto': SimpleUploadedFile("car.jpg", b"file_content", content_type="image/jpeg"),
+            'profilePhoto': SimpleUploadedFile("profile.gif", SMALL_GIF, content_type="image/gif"),
+            'idPhoto': SimpleUploadedFile("id.gif", SMALL_GIF, content_type="image/gif"),
+            'carPhoto': SimpleUploadedFile("car.gif", SMALL_GIF, content_type="image/gif"),
         }
         response = self.client.post('/api/v1/data/driver/verification/', data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -142,9 +144,9 @@ class DriverAPITest(APITestCase):
             'plateNumber': 'T123ABC',
             'carType': 'Sedan',
             'numberOfSeats': 4,
-            'profilePhoto': SimpleUploadedFile("profile.jpg", b"file_content", content_type="image/jpeg"),
-            'idPhoto': SimpleUploadedFile("id.jpg", b"file_content", content_type="image/jpeg"),
-            'carPhoto': SimpleUploadedFile("car.jpg", b"file_content", content_type="image/jpeg"),
+            'profilePhoto': SimpleUploadedFile("profile.gif", SMALL_GIF, content_type="image/gif"),
+            'idPhoto': SimpleUploadedFile("id.gif", SMALL_GIF, content_type="image/gif"),
+            'carPhoto': SimpleUploadedFile("car.gif", SMALL_GIF, content_type="image/gif"),
         }
         response = self.client.post('/api/v1/data/driver/verification/', data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -177,7 +179,7 @@ class DriverAPITest(APITestCase):
             plate_number='T123ABC',
             car_type='Sedan',
             number_of_seats=4,
-            profile_photo=SimpleUploadedFile("profile.jpg", b"file_content", content_type="image/jpeg")
+            profile_photo=SimpleUploadedFile("profile.gif", SMALL_GIF, content_type="image/gif")
         )
         response = self.client.get('/api/v1/data/driver/profile/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -201,7 +203,7 @@ class DriverAPITest(APITestCase):
             plate_number='T123ABC',
             car_type='Sedan',
             number_of_seats=4,
-            car_photo=SimpleUploadedFile("car.jpg", b"file_content", content_type="image/jpeg")
+            car_photo=SimpleUploadedFile("car.gif", SMALL_GIF, content_type="image/gif")
         )
         response = self.client.get('/api/v1/data/driver/car/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
