@@ -95,9 +95,17 @@ class UserLoginSerializer(serializers.Serializer):
         # Single optimized query to find user by email or phone
         user = None
         if '@' in identifier:
-            user = User.objects.select_related().filter(email=identifier, is_active=True).first()
+            user = User.objects.select_related().filter(
+                email=identifier,
+                is_active=True,
+                account_status=User.STATUS_ACTIVE,
+            ).first()
         else:
-            user = User.objects.select_related().filter(phone_number=identifier, is_active=True).first()
+            user = User.objects.select_related().filter(
+                phone_number=identifier,
+                is_active=True,
+                account_status=User.STATUS_ACTIVE,
+            ).first()
         
         # Check user exists and password in one go
         if not user or not user.check_password(password):

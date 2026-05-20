@@ -9,6 +9,7 @@ class RideSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "driver",
+            "passenger",
             "start_lat",
             "start_lng",
             "start_address",
@@ -19,5 +20,17 @@ class RideSerializer(serializers.ModelSerializer):
             "duration_min",
             "geometry",
             "created_at",
+            "status",
+            "cancelled_at",
+            "cancel_reason",
+            "completed_at",
         ]
-        read_only_fields = ["id", "distance_km", "duration_min", "geometry", "created_at"]
+        read_only_fields = [
+            "id",
+            "distance_km",
+            "duration_min",
+            "geometry",
+            "created_at",
+            "cancelled_at",
+            "completed_at",
+        ]

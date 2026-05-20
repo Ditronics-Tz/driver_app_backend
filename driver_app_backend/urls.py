@@ -27,6 +27,7 @@ def api_root(request):
             'auth': '/api/v1/auth/',
             'routing': '/api/v1/routing/',
             'data': '/api/v1/data/',
+            'admin_api': '/api/admin/v1/',
             'admin': '/admin/',
             'oauth': '/api/v1/auth/oauth/',
         },
@@ -45,6 +46,7 @@ urlpatterns = [
     path('api/v1/auth/', include('authentication.urls')),
     path('api/v1/routing/', include('routing.urls')),
     path('api/v1/data/', include('data.urls')),
+    path('api/admin/v1/', include('manager.urls')),
     
     # OAuth2 (alternative path)
     path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
